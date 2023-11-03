@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace对应mapper接口所在的位置-->
+<mapper namespace="com.ning.mapper.UserMapper">
+    <!--对应mapper接口中的方法public Book queryBook(int id);-->
+    <select id="getUserByCondition" resultType="User">
+        select id,account,pass_salt,username,gender,avatar_path,status
+        from user
+        <where>
+            <if test="id!=null">
+                and id = #{id}
+            </if>
+            <if test="username!=null and username!=''">
+                and username like concat('%',#{username},'%')
+            </if>
+            <if test="gender != null and gender != ''">
+                and gender = #{gender},
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status},
+            </if>
+            <if test="account !=null and account!=''">
+                and account=#{account}
+            </if>
+                and is_deleted = 0
+        </where>
+    </select>
+<!--    int register(User user);-->
+    <insert id="register">
+        insert into user
+            (id,account, password, username, pass_salt,avatar_path,gender, status, is_deleted,create_time,update_time,creator,editor)
+        values
+            (#{id},#{account}, #{password}, #{username}, #{passSalt}, #{avatarPath},#{gender},#{status},
+            #{isDeleted},#{createTime},#{updateTime},#{creator},#{editor})
+    </insert>
+<!--    int updateUserByIdOrAccount(User user)-->
+    <update id="updateUserByIdOrAccount" parameterType="User">
+        update user
+        <set>
+            <if test="avatarPath!=null and avatarPath!=''">
+                avatar_path=#{avatarPath},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="gender != null and gender != ''">
+                gender = #{gender},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="editor != null and editor!=''">
+                editor = #{editor},
+            </if>
+        </set>
+        <where>
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+            <if test="account !=null and account!=''">
+                or account=#{account}
+            </if>
+            and is_deleted=0
+        </where>
+    </update>
+<!--    int deleteUserById(long id)-->
+    <update id="deleteUserById">
+        update user set is_deleted=1 where id=#{id}
+    </update>
+<!--    User getUserByAccount(String account);-->
+    <select id="getUserByAccount" resultType="User">
+        select id,account,username,password,pass_salt,avatar_path,gender,status from user where account=#{account} and is_deleted=0
+    </select>
+<!--    List<User> getUserList(String username)-->
+    <select id="getUserList" resultType="User">
+        select
+            id,account,username,avatar_path,gender,status,create_time,update_time,creator,editor,is_deleted
+        from user
+        <where>
+            <if test="username!=null and username!=''">
+                username like concat('%',#{username},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

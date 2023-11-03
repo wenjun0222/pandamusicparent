@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace对应mapper接口所在的位置-->
+<mapper namespace="com.ning.mapper.SingerMapper">
+<!--    List<Singer> getSingerList();-->
+    <select id="getSingerList" resultType="Singer">
+        select id,singer_name,job,nationality,masterpiece,singer_photo_url,status,create_time,update_time,creator,editor
+        from singer
+        where is_deleted=0
+        <if test="singerName!=null and singerName!=''">
+            and singer_name like concat('%',#{singerName},'%')
+        </if>
+    </select>
+<!--    SingerMusicList getSingerById(Integer id);-->
+    <select id="getSingerById" resultType="SingerMusicList">
+        select id,singer_name,job,nationality,masterpiece,singer_photo_url
+        from singer
+        where is_deleted=0
+            and id=#{id}
+    </select>
+<!--    List<Music> getMusicListBySingerNameAndUserId(String singerName,Integer userId)-->
+    <select id="getMusicListBySingerNameAndUserId" resultType="Music">
+        select
+            song.id as id,
+            song.song_name as songName,
+            song.song_url as songUrl,
+            song.song_duration as songDuration,
+            song.song_play_length as songPlayLength,
+            song.lrc_url as lrcUrl,
+            singer.singer_name as singerName,
+            singer.singer_photo_url as singerPhotoUrl,
+            song_type.type_name as songType,
+            (select  user_favorite_song.id
+             from user_favorite_song
+             where user_favorite_song.song_id=song.id
+               and user_favorite_song.is_deleted=0
+                <if test="userId!=null">
+                    and user_favorite_song.user_id=#{userId}
+                </if>
+            ) as userFavoriteSongId
+        from song,singer,song_type
+        where song.singer_id=singer.id
+          and song.type_id=song_type.id
+          and song.status=0
+          and song.is_deleted=0
+          and singer.is_deleted=0
+          and singer.singer_name like concat('%',#{singerName},'%')
+    </select>
+<!--    int addSinger(Singer singer);-->
+    <insert id="addSinger" parameterType="Singer">
+        insert into singer(id,singer_name,job,nationality,masterpiece,singer_photo_url,status,is_deleted,create_time,update_time,creator,editor)
+        value(#{id},#{singerName},#{job},#{nationality},#{masterpiece},#{singerPhotoUrl},#{status},#{isDeleted}
+        ,#{createTime},#{updateTime},#{creator},#{editor})
+    </insert>
+<!--    Singer getSingerBySingerName(String singerName);-->
+    <select id="getSingerBySingerName" resultType="Singer">
+        select id,singer_name from singer where singer_name=#{singerName}
+    </select>
+<!--    int updateSinger(Singer singer)-->
+    <update id="updateSinger">
+        update singer
+        <set>
+            <if test="singerName!=null and singerName!=''">
+                singer_name=#{singerName},
+            </if>
+            <if test="job!=null and job!=''">
+                job=#{job},
+            </if>
+            <if test="nationality!=null and nationality!=''">
+                nationality=#{nationality},
+            </if>
+            <if test="masterpiece!=null and masterpiece!=''">
+                masterpiece=#{masterpiece},
+            </if>
+            <if test="singerPhotoUrl!=null and singerPhotoUrl!=''">
+                singer_photo_url=#{singerPhotoUrl},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="isDeleted!=null">
+                is_deleted=#{isDeleted},
+            </if>
+            <if test="updateTime != null ">
+                update_time = #{updateTime},
+            </if>
+            <if test="editor != null and editor!=''">
+                editor = #{editor}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+<!--    Singer getSingerLikeSingerName(String singerName);-->
+    <select id="getSingerLikeSingerName" resultType="Singer">
+        select id,singer_name,job,nationality,masterpiece,singer_photo_url,status,create_time,update_time,creator,editor,is_deleted
+        from singer
+        where singer_name like concat('%',#{singerName},'%')
+    </select>
+</mapper>

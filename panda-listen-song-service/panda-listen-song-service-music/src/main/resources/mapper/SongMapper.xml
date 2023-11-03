@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace对应mapper接口所在的位置-->
+<mapper namespace="com.ning.mapper.SongMapper">
+<!--    int insertSong(Song song);-->
+    <insert id="insertSong" parameterType="Song">
+        insert into
+            song(id,song_name,song_url,song_duration,song_play_length,lrc_url,singer_id,type_id,status,is_deleted,
+            create_time,update_time,creator,editor)
+        value
+            (#{id},#{songName},#{songUrl},#{songDuration},#{songPlayLength},#{lrcUrl},#{singerId},#{typeId},#{status},#{isDeleted}
+            ,#{createTime},#{updateTime},#{creator},#{editor})
+    </insert>
+<!--    List<Music> getSongListBySingerId(Integer singerId)-->
+    <select id="getSongListBySingerId" resultType="Music">
+        select
+            song.id as id,
+            song.song_name as songName,
+            song.song_url as songUrl,
+            song.song_duration as songDuration,
+            song.song_play_length as songPlayLength,
+            song.lrc_url as lrcUrl,
+            singer.singer_name as singerName,
+            singer.singer_photo_url as singerPhotoUrl,
+            song_type.type_name as songType,
+            (select  user_favorite_song.id
+             from user_favorite_song
+             where user_favorite_song.song_id=song.id
+               and user_favorite_song.is_deleted=0
+                <if test="userId!=null">
+                    and user_favorite_song.user_id=#{userId}
+                </if>
+            ) as userFavoriteSongId
+        from song,singer,song_type
+        where song.singer_id=singer.id
+            and song.type_id=song_type.id
+            and song.status=0
+            and song.is_deleted=0
+            and song.singer_id=#{singerId}
+    </select>
+<!--    List<UserFavoriteSong> getSongListBySingerAndUser(Integer singerId,Integer userId)-->
+    <select id="getSongListBySingerAndUser" resultType="UserFavoriteSong">
+        select id,song_id
+        from user_favorite_song
+        where user_id=#{userId}
+        and singer_id=#{singerId}
+    </select>
+    <!--    List<UserFavoriteSong> getSongListBySingerAndType(Integer singerId,Integer typeId)-->
+    <select id="getSongListBySingerAndType" resultType="UserFavoriteSong">
+        select id,song_id
+        from user_favorite_song
+        where user_id=#{userId}
+          and type_id=#{typeId}
+    </select>
+    <!--    List<Music> getSongListByTypeId(Integer typeId)-->
+    <select id="getSongListByTypeId" resultType="Music">
+        select
+            song.id as id,
+            song.song_name as songName,
+            song.song_url as songUrl,
+            song.song_duration as songDuration,
+            song.song_play_length as songPlayLength,
+            song.lrc_url as lrcUrl,
+            singer.singer_name as singerName,
+            singer.singer_photo_url as singerPhotoUrl,
+            song_type.type_name as songType,
+            (select  user_favorite_song.id
+             from user_favorite_song
+             where user_favorite_song.song_id=song.id
+               and user_favorite_song.is_deleted=0
+                <if test="userId!=null">
+                    and user_favorite_song.user_id=#{userId}
+                </if>
+            ) as userFavoriteSongId
+        from song,singer,song_type
+        where song.singer_id=singer.id
+            and song.type_id=song_type.id
+            and song.status=0
+            and song.is_deleted=0
+            and song.type_id=#{typeId}
+    </select>
+<!--    SongTypeMusicList getSongTypeById(Integer id)-->
+    <select id="getSongTypeById" resultType="SongTypeMusicList">
+        select id,type_name,type_summary,type_photo_url,type_description
+        from song_type
+        where is_deleted=0
+            and id=#{id}
+    </select>
+<!--    List<SongType> getSongTypeList();-->
+    <select id="getSongTypeList" resultType="SongType">
+        select id,type_name,type_summary,type_photo_url,type_description,status,create_time,update_time,creator,editor,is_deleted
+        FROM song_type
+        <where>
+            <if test="typeName!=null and typeName!=''">
+                type_name like concat('%',#{typeName},'%')
+            </if>
+        </where>
+    </select>
+<!--    List<Music> getMusicListBySongNameAndUserId(String songName,Integer userId)-->
+    <select id="getMusicListBySongNameAndUserId" resultType="Music">
+        select
+            song.id as id,
+            song.song_name as songName,
+            song.song_url as songUrl,
+            song.song_duration as songDuration,
+            song.song_play_length as songPlayLength,
+            song.lrc_url as lrcUrl,
+            singer.singer_name as singerName,
+            singer.singer_photo_url as singerPhotoUrl,
+            song_type.type_name as songType,
+            (select  user_favorite_song.id
+             from user_favorite_song
+             where user_favorite_song.song_id=song.id
+                and user_favorite_song.is_deleted=0
+                <if test="userId!=null">
+                    and user_favorite_song.user_id=#{userId}
+                </if>
+            ) as userFavoriteSongId
+        from song,singer,song_type
+        where song.singer_id=singer.id
+          and song.type_id=song_type.id
+          and song.status=0
+          and song.is_deleted=0
+          and song.song_name like concat('%',#{songName},'%')
+    </select>
+<!--    List<Music> getMusicListOnlySix(Integer userId)-->
+    <select id="getMusicListOnlySix" resultType="Music">
+        select
+            song.id as id,
+            song.song_name as songName,
+            song.song_url as songUrl,
+            song.song_duration as songDuration,
+            song.song_play_length as songPlayLength,
+            song.lrc_url as lrcUrl,
+            singer.singer_name as singerName,
+            singer.singer_photo_url as singerPhotoUrl,
+            song_type.type_name as songType,
+            (select  user_favorite_song.id
+            from user_favorite_song
+            where user_favorite_song.song_id=song.id
+                and user_favorite_song.is_deleted=0
+                and user_favorite_song.user_id=#{userId}
+            ) as userFavoriteSongId
+        from song,singer,song_type
+        where song.singer_id=singer.id
+            and song.type_id=song_type.id
+            and song.status=0
+            and song.is_deleted=0
+        limit 1,6
+    </select>
+<!--    List<Music> getSongList()-->
+    <select id="getSongList" resultType="Music" parameterType="SearchCondition">
+        select
+            song.id as id,
+            song.song_name as songName,
+            song.song_duration as songDuration,
+            song.song_play_length as songPlayLength,
+            singer.singer_name as singerName,
+            song_type.type_name as songType,
+            song.status as status,
+            song.update_time as updateTime,
+            song.create_time as createTime,
+            song.creator as creator,
+            song.editor as editor,
+            song.is_deleted as isDeleted
+        from song,singer,song_type
+        where song.singer_id=singer.id
+            and song.type_id=song_type.id
+            <if test="name!=null and name!=''">
+                and song_name like concat('%',#{name},'%')
+            </if>
+            <if test="typeId!=null">
+                and type_id=#{typeId}
+            </if>
+            <if test="singerId!=null">
+                and singer_id=#{singerId}
+            </if>
+    </select>
+<!--    int updateSong(Song song)-->
+    <update id="updateSong">
+        update song
+        <set>
+            <if test="songName !=null and songName!=''">
+                song_name=#{songName},
+            </if>
+            <if test="songUrl!=null and songUrl!=''">
+                song_url=#{songUrl},
+            </if>
+            <if test="songDuration!=null and songDuration!=''">
+                song_duration=#{songDuration},
+            </if>
+            <if test="songPlayLength!=null and songPlayLength!=''">
+                song_play_length=#{songPlayLength},
+            </if>
+            <if test="lrcUrl!=null and lrcUrl!=''">
+                lrc_url=#{lrcUrl},
+            </if>
+            <if test="singerId!=null">
+                singer_id=#{singerId},
+            </if>
+            <if test="typeId!=null">
+                type_id=#{typeId},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="isDeleted!=null">
+                is_deleted=#{isDeleted},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="editor != null and editor!=''">
+                editor = #{editor}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+<!--    Song getSongById(Integer songId)-->
+    <select id="getSongById" resultType="Song">
+        select
+            id,song_name,song_url,song_duration,song_play_length,lrc_url,singer_id,type_id
+        from song
+        where id=#{songId} and is_deleted=0
+    </select>
+<!--    int updateSongType(SongType songType)-->
+    <update id="updateSongType" parameterType="SongType">
+        update song_type
+        <set>
+            <if test="typeName!=null and typeName!=''">
+                type_name=#{typeName},
+            </if>
+            <if test="typePhotoUrl!=null and typePhotoUrl!=''">
+                type_photo_url=#{typePhotoUrl},
+            </if>
+            <if test="typeSummary!=null and typeSummary!=''">
+                type_summary=#{typeSummary},
+            </if>
+            <if test="typeDescription!=null and typeDescription!=''">
+                type_description=#{typeDescription},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="isDeleted!=null">
+                is_deleted=#{isDeleted},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="editor != null and editor!=''">
+                editor = #{editor}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+<!--    int addSongType(SongType songType)-->
+    <insert id="addSongType" parameterType="SongType">
+        insert into
+        song_type(id,type_name,type_photo_url,type_summary,type_description,status,is_deleted,
+        create_time,update_time,creator,editor)
+        value
+        (#{id},#{typeName},#{typePhotoUrl},#{typeSummary},#{typeDescription},#{status},#{isDeleted}
+        ,#{createTime},#{updateTime},#{creator},#{editor})
+    </insert>
+</mapper>

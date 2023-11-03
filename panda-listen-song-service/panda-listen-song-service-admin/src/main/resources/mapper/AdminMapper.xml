@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace对应mapper接口所在的位置-->
+<mapper namespace="com.ning.mapper.AdminMapper">
+<!--    int registerAdmin(Admin admin);-->
+    <insert id="registerAdmin" parameterType="Admin">
+        insert into
+        admin(id,account,password,admin_name,type,pass_salt,status)
+        value
+        (#{id},#{account},#{password},#{adminName},#{type},#{passSalt},#{status})
+    </insert>
+<!--    int updateAdmin(Admin admin)-->
+    <insert id="updateAdmin" parameterType="AdminQuery">
+        update admin
+        <set>
+            <if test="password!=null and password!=''">
+                password=#{password},
+            </if>
+            <if test="adminName!=null and adminName!=''">
+                admin_name=#{adminName},
+            </if>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+        </set>
+        <where>
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+            <if test="account!=null and account !=''">
+                and account=#{account}
+            </if>
+        </where>
+    </insert>
+<!--    int deleteAdminById(Integer id);-->
+    <delete id="deleteAdminById">
+        delete from admin where id=#{id}
+    </delete>
+<!--    Admin getAdminByCondition(Integer id);-->
+    <select id="getAdminByCondition" resultType="AdminQuery">
+        select id,account,password,pass_salt,admin_name,status,type
+        from admin
+        <where>
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+            <if test="account!=null and account !=''">
+                and account=#{account}
+            </if>
+            <if test="adminName!=null and adminName!=''">
+                and admin_name=#{adminName}
+            </if>
+        </where>
+    </select>
+<!--    List<Admin> getAdminList()-->
+    <select id="getAdminList" resultType="Admin">
+        select id,account,admin_name,status from admin where `type`=1
+    </select>
+</mapper>

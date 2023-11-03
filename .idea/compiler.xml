@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="panda-listen-song-service-admin" />
+        <module name="heima-dianping" />
+        <module name="service-activity" />
+        <module name="panda-listen-song-service-user" />
+        <module name="model" />
+        <module name="common-util" />
+        <module name="panda-listen-song-service-music" />
+        <module name="provider" />
+        <module name="panda-listen-song-model" />
+        <module name="service-sys" />
+        <module name="service-gateway" />
+        <module name="service-search" />
+        <module name="common-service" />
+        <module name="service-acl" />
+        <module name="panda-listen-song-gateway" />
+        <module name="consumer" />
+        <module name="redis-spring-boot-starter" />
+        <module name="panda-listen-song-utils" />
+        <module name="panda-listen-song-feign" />
+        <module name="service-product" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hmdianping" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="cloudtest" options="-parameters" />
+      <module name="common-service" options="-parameters" />
+      <module name="common-util" options="-parameters" />
+      <module name="consumer" options="-parameters" />
+      <module name="heima-dianping" options="-parameters" />
+      <module name="hmdianping" options="-parameters" />
+      <module name="model" options="-parameters" />
+      <module name="panda-listen-song-feign" options="-parameters" />
+      <module name="panda-listen-song-gateway" options="-parameters" />
+      <module name="panda-listen-song-model" options="-parameters" />
+      <module name="panda-listen-song-service-admin" options="-parameters" />
+      <module name="panda-listen-song-service-music" options="-parameters" />
+      <module name="panda-listen-song-service-user" options="-parameters" />
+      <module name="panda-listen-song-utils" options="-parameters" />
+      <module name="pandamusicparent" options="" />
+      <module name="provider" options="-parameters" />
+      <module name="redis-spring-boot-starter" options="-parameters" />
+      <module name="service" options="-parameters" />
+      <module name="service-acl" options="-parameters" />
+      <module name="service-activity" options="-parameters" />
+      <module name="service-gateway" options="-parameters" />
+      <module name="service-product" options="-parameters" />
+      <module name="service-search" options="-parameters" />
+      <module name="service-sys" options="-parameters" />
+    </option>
+  </component>
+</project>

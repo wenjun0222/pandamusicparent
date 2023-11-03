@@ -1,0 +1,74 @@
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  #设置上传文件的大小限制
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+  #redis数据库链接
+  redis:
+    #redis数据库主机地址
+    host: 192.168.91.200
+    #redis数据库主机端口
+    port: 6379
+    #redis数据库主机密码
+    #    password: Ning1995.
+    jedis:
+      pool:
+        # 连接池最大连接数，若为负数则表示没有任何限制
+        max-active: 10
+        # 连接池最大阻塞等待时间，若为负数则表示没有任何限制
+        max-wait: -1
+        # 连接池中的最大空闲连接
+        max-idle: 10
+  #服务名称
+  application:
+    name: music-service
+  #服务与注册配置中心地址
+  cloud:
+    nacos:
+      server-addr: 192.168.91.200:8848
+  #数据库配置
+  datasource:
+    #数据库驱动
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #数据库链接地址
+    url: jdbc:mysql://192.168.91.200:3306/song?characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+    #mysql数据库链接名称
+    username: root
+    #数据库链接密码
+    password: Ning1995.
+mybatis:
+  #匹配sql语句的映射文件的位置，classpat代表在resources下
+  mapper-locations: classpath:mapper/*.xml
+  #使用type-aliases-package中指定entity扫描包类让mybatis自定扫描到自定义的entity
+  type-aliases-package: com.ning
+  configuration:
+    # 开启驼峰uName自动映射到u_name
+    map-underscore-to-camel-case: true
+#服务链接端口
+server:
+  port: 9002
+# 分页配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+#minio文件管理系统配置
+minio:
+  #Minio服务所在地址
+  endpoint: http://192.168.91.200:9000
+  #存储桶名称
+  bucketName: pandamusic
+  #访问的key
+  accessKey: root
+  #访问的秘钥
+  secretKey: Ning1995.
+
+
+
+

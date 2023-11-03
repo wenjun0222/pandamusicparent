@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace对应mapper接口所在的位置-->
+<mapper namespace="com.ning.mapper.UserFavoriteSongMapper">
+<!--    List<Music> getMusicListByUserId(Integer userId)-->
+    <select id="getMusicListByUserId" resultType="Music">
+        select
+            song.id as id,
+            song.song_name as songName,
+            song.song_url as songUrl,
+            song.song_duration as songDuration,
+            song.song_play_length as songPlayLength,
+            song.lrc_url as lrcUrl,
+            singer.singer_name as singerName,
+            singer.singer_photo_url as singerPhotoUrl,
+            song_type.type_name as songType,
+            user_favorite_song.id as userFavoriteSongId
+        from song,singer,song_type,user_favorite_song
+        where user_favorite_song.singer_id=singer.id
+          and user_favorite_song.type_id=song_type.id
+          and user_favorite_song.song_id=song.id
+          and user_favorite_song.is_deleted=0
+          and song.status=0
+          and song.is_deleted=0
+          and user_favorite_song.user_id=#{userId}
+    </select>
+<!--    int insertUserLikeSong(UserFavoriteSong userFavoriteSong)-->
+    <insert id="insertUserLikeSong" parameterType="UserFavoriteSong">
+        insert into user_favorite_song(id,user_id,type_id,song_id,singer_id)
+        value (#{id},#{userId},#{typeId},#{songId},#{singerId})
+    </insert>
+<!--    int getIdsBySongId(Integer song_id);-->
+    <select id="getIdsBySongId" resultType="song">
+        select id,type_id,singer_id
+        from song
+        where id=#{songId}
+            and is_deleted=0
+            and status=0
+    </select>
+<!--    int deleteUserLikeSongById(Integer id);-->
+    <update id="deleteUserLikeSongById">
+        delete from user_favorite_song where id=#{id}
+    </update>
+<!--    UserFavoriteSong getByUserIdAndSongId(Integer userId,Integer songId)-->
+    <select id="getByUserIdAndSongId" resultType="Integer">
+        select id from user_favorite_song where user_id=#{userId} and song_id=#{songId}
+    </select>
+</mapper>

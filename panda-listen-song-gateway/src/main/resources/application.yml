@@ -1,0 +1,74 @@
+spring:
+  #服务名称
+  application:
+    name: gateway-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.91.200:8848
+    #服务网关配置
+    gateway:
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedHeaders: "*"
+            allowedOrigins: "*"
+            # 是否允许携带cookie
+            allowCredentials: true
+            # 这次跨域检测的有效期
+            maxAge: 360000
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - OPTION
+      routes:
+        - id: user #路由 id，没有要求，保持唯一即可
+          uri: lb://user-service #使用 lb 协议 微服务名称做负均衡
+          predicates:
+            - Path=/user/**
+          filters:
+            # 校验
+            # 去除一个前缀
+            - StripPrefix=1
+        - id: music #路由 id，没有要求，保持唯一即可
+          uri: lb://music-service #使用 lb 协议 微服务名称做负均衡
+          predicates:
+            - Path=/music/**
+          filters:
+            # 校验
+            # 去除一个前缀
+            - StripPrefix=1
+        - id: admin #路由 id，没有要求，保持唯一即可
+          uri: lb://admin-service #使用 lb 协议 微服务名称做负均衡
+          predicates:
+              - Path=/admin/**
+          filters:
+              # 校验
+              # 去除一个前缀
+              - StripPrefix=1
+      discovery:
+        locator:
+          lower-case-service-id: true
+          enabled: true
+  #redis数据库链接
+  redis:
+    #redis数据库主机地址
+    host: 192.168.91.200
+    #redis数据库主机端口
+    port: 6379
+#    #redis数据库主机密码
+#    password: Ning1995.
+    jedis:
+      pool:
+        # 连接池最大连接数，若为负数则表示没有任何限制
+        max-active: 10
+        # 连接池最大阻塞等待时间，若为负数则表示没有任何限制
+        max-wait: -1
+        # 连接池中的最大空闲连接
+        max-idle: 10
+#服务端口
+server:
+  port: 10000
